@@ -6,34 +6,33 @@ var generateCourseAccessData = require('CourseAccess/course-access-data.js').gen
     utils = require('Common/utils.js'),
     generateCourseAccessLastDayData = require('CourseAccess/course-access-data.js').generateLast,
     generateGradesData = require('Grades/grades-data.js').generate,
-    generatePredictedGradesData = require('Grades/predicted-grades-data.js').generate;
-    generateDiscussionsData = require('Discussions/discussions-data.js').generate;
-
-/*// Last Day of Course Access of specified user for Course - NEW ROUTE
-Sandbox.define('/v1/aggregates/10000/data/{orgUnitId}/{userId}','GET', function(req, res) {
-    var result = generateCourseAccessLastDayData(req.params.orgUnitId, req.params.userId);
-
-    res.type('application/json');
-    res.status(200);
-    res.json(result);
-});*/
+    generatePredictedGradesData = require('Grades/predicted-grades-data.js').generate,
+    generateDiscussionsData = require('Discussions/discussions-data.js').generate,
+    register = require('AggrDefRegistration/register.js');
+    
+Sandbox.define('/v1/aggregates', 'POST', function(req, res) {
+  if (!req.body.AggregateName) {
+    return res.json(400, {error: 'missing AggregateName'});
+  }
+  
+  var ret = register(req.body);
+  if (!ret) {
+    return res.json(400, {error: 'Could not assign aggregation id'});
+  }
+  
+  return res.json(ret);
+});
 
 // Last Day of Course Access of all users for Course - NEW ROUTE
-//Sandbox.define('/v1/aggregates/10000/data/{orgUnitId}','GET', function(req, res) {
 Sandbox.define('/v1/aggregates/5/data/{orgUnitId}','GET', function(req, res) {
     var result = generateCourseAccessLastDayData(req.params.orgUnitId);
 
     res.type('application/json');
     res.status(200);
     res.json(result);
-    
-    //res.json({"6613":{"175":{"0":"/Date(1461166825000)/"},"178":{"0": "/Date(1461166825000)/"}}});
-    //res.json({});
-    
 });
 
 // Current Grade of all users for Course - NEW ROUTE
-//Sandbox.define('/v1/aggregates/20000/data/{orgUnitId}','GET', function(req, res) {
 Sandbox.define('/v1/aggregates/6/data/{orgUnitId}','GET', function(req, res) {
     var result = generateGradesData(req.params.orgUnitId);
 
@@ -43,7 +42,6 @@ Sandbox.define('/v1/aggregates/6/data/{orgUnitId}','GET', function(req, res) {
 });
 
 // Predicted Grade of all users for Course - NEW ROUTE
-//Sandbox.define('/v1/aggregates/30000/data/{orgUnitId}','GET', function(req, res) {
 Sandbox.define('/v1/aggregates/8/data/{orgUnitId}','GET', function(req, res) {
     var result = generatePredictedGradesData(req.params.orgUnitId);
 
@@ -53,7 +51,6 @@ Sandbox.define('/v1/aggregates/8/data/{orgUnitId}','GET', function(req, res) {
 });
 
 // Threads started
-//Sandbox.define('/v1/aggregates/40000/data/{orgUnitId}','GET', function(req, res) {
 Sandbox.define('/v1/aggregates/15/data/{orgUnitId}','GET', function(req, res) {
     var dates = utils.parseDates(req.query.startTime, req.query.endTime);
     
@@ -65,7 +62,6 @@ Sandbox.define('/v1/aggregates/15/data/{orgUnitId}','GET', function(req, res) {
 });
 
 // Posts replied to
-//Sandbox.define('/v1/aggregates/50000/data/{orgUnitId}','GET', function(req, res) {
 Sandbox.define('/v1/aggregates/16/data/{orgUnitId}','GET', function(req, res) {
     var dates = utils.parseDates(req.query.startTime, req.query.endTime);
     
