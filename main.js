@@ -50,6 +50,15 @@ Sandbox.define('/v1/aggregates/8/data/{orgUnitId}','GET', function(req, res) {
     res.json(result);
 });
 
+// Predicted Grade of all users for Course - NEW ROUTE - UPDATED TO INCLUDE MODEL ID AND WEEK
+Sandbox.define('/v1/aggregates/8/data/{orgUnitId}/{activemodelId}/{predictedweek}','GET', function(req, res) {
+    var result = generatePredictedGradesData(req.params.orgUnitId);
+
+    res.type('application/json');
+    res.status(200);
+    res.json(result);
+});
+
 // Threads started
 Sandbox.define('/v1/aggregates/15/data/{orgUnitId}','GET', function(req, res) {
     var dates = utils.parseDates(req.query.startTime, req.query.endTime);
